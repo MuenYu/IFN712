@@ -1,4 +1,5 @@
 *~
+.idea
 loadtest/loadtest
 pingtest/pingtest
 pub/pub
