@@ -3,11 +3,11 @@ package main
 import (
 	"flag"
 	"fmt"
-	"net"
+	"mqtt/kcp"
 	"os"
+	"time"
 
 	proto "github.com/huin/mqtt"
-	"github.com/jeffallen/mqtt"
 )
 
 var host = flag.String("host", "localhost:1883", "hostname of broker")
@@ -15,7 +15,6 @@ var user = flag.String("user", "", "username")
 var pass = flag.String("pass", "", "password")
 var dump = flag.Bool("dump", false, "dump messages?")
 var retain = flag.Bool("retain", false, "retain message?")
-var wait = flag.Bool("wait", false, "stay connected after publishing?")
 
 func main() {
 	flag.Parse()
@@ -25,12 +24,15 @@ func main() {
 		return
 	}
 
-	conn, err := net.Dial("tcp", *host)
+	//conn, err := net.Dial("tcp", *host)
+	conn, err := kcp.DialKCP(*host)
 	if err != nil {
 		fmt.Fprint(os.Stderr, "dial: ", err)
 		return
 	}
-	cc := mqtt.NewClientConn(conn)
+	//cc := tcp.NewClientConn(conn)
+	cc := kcp.NewClientConn(conn)
+	defer cc.Disconnect()
 	cc.Dump = *dump
 
 	if err := cc.Connect(*user, *pass); err != nil {
@@ -39,15 +41,14 @@ func main() {
 	}
 	fmt.Println("Connected with client id", cc.ClientId)
 
-	cc.Publish(&proto.Publish{
-		Header:    proto.Header{Retain: *retain},
-		TopicName: flag.Arg(0),
-		Payload:   proto.BytesPayload([]byte(flag.Arg(1))),
-	})
-
-	if *wait {
-		<-make(chan bool)
+	for {
+		time.Sleep(time.Second)
+		msg := "hello world"
+		cc.Publish(&proto.Publish{
+			Header:    proto.Header{Retain: *retain},
+			TopicName: flag.Arg(0),
+			Payload:   proto.BytesPayload(msg),
+		})
+		fmt.Printf("send msg: %s\n", msg)
 	}
-
-	cc.Disconnect()
 }

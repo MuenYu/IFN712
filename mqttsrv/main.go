@@ -3,22 +3,30 @@ package main
 import (
 	"flag"
 	"log"
+	"mqtt/kcp"
+	"mqtt/tcp"
 	"net"
-
-	"github.com/jeffallen/mqtt"
 )
 
-var addr = flag.String("addr", "localhost:1883", "listen address of broker")
+var addr = flag.String("addr", ":1883", "listen address of broker")
 
 func main() {
 	flag.Parse()
 
-	l, err := net.Listen("tcp", *addr)
+	lTcp, err := net.Listen("tcp", *addr)
 	if err != nil {
 		log.Print("listen: ", err)
 		return
 	}
-	svr := mqtt.NewServer(l)
-	svr.Start()
-	<-svr.Done
+	lKcp, err := kcp.ListenKCP(*addr)
+	if err != nil {
+		log.Print("listen: ", err)
+		return
+	}
+	svrTcp := tcp.NewServer(lTcp)
+	svrKcp := kcp.NewServer(lKcp)
+	svrTcp.Start()
+	svrKcp.Start()
+	<-svrTcp.Done
+	<-svrKcp.Done
 }
