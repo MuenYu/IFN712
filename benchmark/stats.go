@@ -18,13 +18,13 @@ func (info *testRecord) String() string {
 }
 
 type statsData struct {
-	successList []testRecord
-	failList    []testRecord
-	stats       welford.Stats
+	successCount int
+	recordList   []testRecord
+	stats        welford.Stats
 }
 
 func (sd *statsData) report() {
-	log.Printf("success rate: %.2f\n", float64(len(sd.successList))/float64(messageCapacity))
+	log.Printf("success rate: %d/%d\n", sd.successCount, messageCapacity)
 	log.Printf("min latency: %.2f\n", sd.stats.Min())
 	log.Printf("max latency: %.2f\n", sd.stats.Max())
 	log.Printf("mean latency: %.2f\n", sd.stats.Mean())
@@ -37,12 +37,10 @@ var (
 
 	data = map[string]*statsData{
 		"TCP": {
-			successList: make([]testRecord, 0, messageCapacity),
-			failList:    make([]testRecord, 0, messageCapacity),
+			recordList: make([]testRecord, 0, messageCapacity),
 		},
 		"KCP": {
-			successList: make([]testRecord, 0, messageCapacity),
-			failList:    make([]testRecord, 0, messageCapacity),
+			recordList: make([]testRecord, 0, messageCapacity),
 		},
 	}
 )
@@ -50,10 +48,9 @@ var (
 func runStats() {
 	for record := range statsChan {
 		protoStats := data[record.proto]
+		protoStats.recordList = append(protoStats.recordList, record)
 		if record.errMsg == "" {
-			protoStats.successList = append(protoStats.successList, record)
-		} else {
-			protoStats.failList = append(protoStats.failList, record)
+			protoStats.successCount++
 		}
 		protoStats.stats.Add(float64(record.latency))
 	}
