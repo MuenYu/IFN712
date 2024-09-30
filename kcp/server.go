@@ -244,7 +244,8 @@ func (s *Server) Start() {
 				log.Print("Accept: ", err)
 				break
 			}
-
+			// enable kcp turbo mode
+			conn.SetNoDelay(1, 10, 2, 1)
 			cli := s.newIncomingConn(conn)
 			s.stats.clientConnect()
 			cli.start()

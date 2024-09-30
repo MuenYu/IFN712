@@ -94,6 +94,8 @@ func connectKcp() *kcp.ClientConn {
 		fmt.Printf("kcp dial: %v\n", err)
 		os.Exit(2)
 	}
+	// enable kcp turbo mode
+	conn.SetNoDelay(1, 10, 2, 1)
 	cc := kcp.NewClientConn(conn)
 	err = cc.Connect("", "")
 	if err != nil {
