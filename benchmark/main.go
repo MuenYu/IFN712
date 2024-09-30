@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"sync"
 )
 
@@ -14,29 +13,26 @@ const (
 
 var (
 	connectionsReady sync.WaitGroup
-	testSet          = map[string]func(i int){
-		"TCP": pingTcp,
-		"KCP": pingKcp,
+	pings            = []func(i int){
+		pingTcp,
+		pingKcp,
 	}
 )
 
 func main() {
-	for proto, pingFunc := range testSet {
-		log.Printf("-------------%s start-----------------\n", proto)
+	go runStats()
+
+	for _, ping := range pings {
 		connectionsReady.Add(2 * pairs)
-		go func() {
-			connectionsReady.Wait()
-			log.Println("all pub-sub pairs created")
-		}()
 		var wg sync.WaitGroup
 		for id := 1; id <= pairs; id++ {
 			wg.Add(1)
 			go func(id int) {
 				defer wg.Done()
-				pingFunc(id)
+				ping(id)
 			}(id)
 		}
 		wg.Wait()
-		log.Printf("-------------%s end-----------------\n", proto)
 	}
+	stopStats()
 }

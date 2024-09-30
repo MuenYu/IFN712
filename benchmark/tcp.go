@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	proto "github.com/huin/mqtt"
-	"log"
 	"mqtt/tcp"
 	"net"
 	"os"
@@ -61,18 +60,30 @@ func pingTcp(i int) {
 			break
 		}
 		elapsed := time.Since(timeStart)
-		log.Printf("%d: %v\n", i, elapsed)
 
 		buf := &bytes.Buffer{}
 		err := in.Payload.WritePayload(buf)
 		if err != nil {
 			// TODO: exception data collection
-			log.Printf("record error: %v\n", err)
+			statsChan <- testRecord{
+				proto:   "TCP",
+				latency: elapsed,
+				errMsg:  err.Error(),
+			}
 		} else if !bytes.Equal(buf.Bytes(), payload) {
 			// TODO: exception data collection
-			log.Println("payload mismatch")
+			statsChan <- testRecord{
+				proto:   "TCP",
+				latency: elapsed,
+				errMsg:  "payload mismatch",
+			}
 		} else {
 			// TODO: latency data collection
+			statsChan <- testRecord{
+				proto:   "TCP",
+				latency: elapsed,
+				errMsg:  "",
+			}
 		}
 	}
 	close(stop)
