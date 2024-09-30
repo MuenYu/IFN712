@@ -7,36 +7,36 @@ import (
 
 const (
 	host         = "127.0.0.1:1883"
-	pairs        = 100
-	mode         = "KCP"
-	messageCount = 100
+	pairs        = 10
+	messageCount = 1000
 	payloadSize  = 1024
 )
 
-var connectionsReady sync.WaitGroup
+var (
+	connectionsReady sync.WaitGroup
+	testSet          = map[string]func(i int){
+		"TCP": pingTcp,
+		"KCP": pingKcp,
+	}
+)
 
 func main() {
-	connectionsReady.Add(2 * pairs)
-	go func() {
-		connectionsReady.Wait()
-		log.Println("all pub-sub pairs created")
-	}()
-
-	var wg sync.WaitGroup
-	for i := 1; i <= pairs; i++ {
-		wg.Add(1)
-		go func(i int) {
-			defer wg.Done()
-			switch mode {
-			case "TCP":
-				pingTcp(i)
-			case "KCP":
-				pingKcp(i)
-			default:
-				log.Fatalln("mode should be TCP or KCP only")
-			}
-		}(i)
+	for proto, pingFunc := range testSet {
+		log.Printf("-------------%s start-----------------\n", proto)
+		connectionsReady.Add(2 * pairs)
+		go func() {
+			connectionsReady.Wait()
+			log.Println("all pub-sub pairs created")
+		}()
+		var wg sync.WaitGroup
+		for id := 1; id <= pairs; id++ {
+			wg.Add(1)
+			go func(id int) {
+				defer wg.Done()
+				pingFunc(id)
+			}(id)
+		}
+		wg.Wait()
+		log.Printf("-------------%s end-----------------\n", proto)
 	}
-	wg.Wait()
-	log.Println("all pub-sub pairs finished")
 }
