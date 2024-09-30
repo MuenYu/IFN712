@@ -46,7 +46,7 @@ func pingKcp(i int) {
 		{topic2, proto.QosAtMostOnce},
 	})
 
-	for count := 0; count < messageCount; count++ {
+	for count := 0; count < messagePerPair; count++ {
 		timeStart := time.Now()
 		cc.Publish(&proto.Publish{
 			Header:    proto.Header{QosLevel: proto.QosAtMostOnce},

@@ -6,10 +6,10 @@ import (
 )
 
 const (
-	host         = "127.0.0.1:1883"
-	pairs        = 100
-	messageCount = 100
-	payloadSize  = 1024
+	host           = "127.0.0.1:1883"
+	pairs          = 100
+	messagePerPair = 100
+	payloadSize    = 1024
 )
 
 var (
