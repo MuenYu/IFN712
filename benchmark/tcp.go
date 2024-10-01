@@ -59,32 +59,19 @@ func pingTcp(i int) {
 		if in == nil {
 			break
 		}
-		elapsed := time.Since(timeStart)
+		record := testRecord{
+			proto:   "TCP",
+			latency: time.Since(timeStart),
+		}
 
 		buf := &bytes.Buffer{}
 		err := in.Payload.WritePayload(buf)
 		if err != nil {
-			// TODO: exception data collection
-			statsChan <- testRecord{
-				proto:   "TCP",
-				latency: elapsed,
-				errMsg:  err.Error(),
-			}
+			record.errMsg = err.Error()
 		} else if !bytes.Equal(buf.Bytes(), payload) {
-			// TODO: exception data collection
-			statsChan <- testRecord{
-				proto:   "TCP",
-				latency: elapsed,
-				errMsg:  "payload mismatch",
-			}
-		} else {
-			// TODO: latency data collection
-			statsChan <- testRecord{
-				proto:   "TCP",
-				latency: elapsed,
-				errMsg:  "",
-			}
+			record.errMsg = "payload mismatch"
 		}
+		statsChan <- record
 	}
 	close(stop)
 }

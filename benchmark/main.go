@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/schollz/progressbar/v3"
+	"log"
 	"sync"
 )
 
@@ -25,14 +26,16 @@ func main() {
 
 	for _, ping := range pings {
 		connectionsReady.Add(2 * pairs)
-		bar := progressbar.Default(pairs)
 		var wg sync.WaitGroup
+		bar := progressbar.Default(pairs)
 		for id := 1; id <= pairs; id++ {
 			wg.Add(1)
 			go func(id int) {
 				defer wg.Done()
-				defer bar.Add(1)
 				ping(id)
+				if err := bar.Add(1); err != nil {
+					log.Println(err.Error())
+				}
 			}(id)
 		}
 		wg.Wait()
