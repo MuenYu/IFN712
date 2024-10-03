@@ -9,9 +9,9 @@ import (
 	"time"
 )
 
-func pingKcp(i int) {
-	topic := fmt.Sprintf("pingtest/%v/request", i)
-	topic2 := fmt.Sprintf("pingtest/%v/reply", i)
+func pingKcp() {
+	topic := fmt.Sprintf("pingtest/kcp/request")
+	topic2 := fmt.Sprintf("pingtest/kcp/reply")
 
 	start := make(chan struct{})
 	stop := make(chan struct{})
@@ -43,36 +43,39 @@ func pingKcp(i int) {
 	defer cc.Disconnect()
 
 	cc.Subscribe([]proto.TopicQos{
-		{topic2, proto.QosAtMostOnce},
+		{topic2, proto.QosAtLeastOnce},
 	})
-
 	for count := 0; count < messagePerPair; count++ {
+		clearChan(cc.Incoming)
+		record := testRecord{
+			proto: "KCP",
+		}
 		timeStart := time.Now()
 		cc.Publish(&proto.Publish{
 			Header:    proto.Header{QosLevel: proto.QosAtMostOnce},
 			TopicName: topic,
 			Payload:   payload,
 		})
-
-		in := <-cc.Incoming
-		if in == nil {
-			break
+		select {
+		case in := <-cc.Incoming:
+			if in == nil {
+				return
+			}
+			record.latency = time.Since(timeStart)
+			buf := &bytes.Buffer{}
+			err := in.Payload.WritePayload(buf)
+			if err != nil {
+				record.errMsg = err.Error()
+			} else if !bytes.Equal(buf.Bytes(), payload) {
+				record.errMsg = "payload mismatch"
+			}
+		case <-time.After(timeout):
+			record.latency = -1
+			record.errMsg = "timeout"
 		}
-		record := testRecord{
-			proto:   "KCP",
-			latency: time.Since(timeStart),
-		}
-
-		buf := &bytes.Buffer{}
-		err := in.Payload.WritePayload(buf)
-		if err != nil {
-			record.errMsg = err.Error()
-		} else if !bytes.Equal(buf.Bytes(), payload) {
-			record.errMsg = "payload mismatch"
-		}
-		statsChan <- record
+		recordChan <- record
+		time.Sleep(reqInterval)
 	}
-	close(stop)
 }
 
 func connectKcp() *kcp.ClientConn {
@@ -81,14 +84,11 @@ func connectKcp() *kcp.ClientConn {
 		fmt.Printf("kcp dial: %v\n", err)
 		os.Exit(2)
 	}
-	// enable kcp turbo mode
-	conn.SetNoDelay(1, 10, 2, 1)
 	cc := kcp.NewClientConn(conn)
 	err = cc.Connect("", "")
 	if err != nil {
 		fmt.Printf("kcp connect: %v\n", err)
 		os.Exit(3)
 	}
-	connectionsReady.Done()
 	return cc
 }

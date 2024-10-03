@@ -1,48 +1,51 @@
 # IFN 712 - MQTT over KCP prototype program
 
 A prototype program for PoC (Proof of Concept), is used to check and compare the latency performance between MQTT over
-TCP and MQTT over KCP
+TCP and MQTT over KCP.
 
-## Key Components:
-- pub: topic publishers in MQTT protocol
-- broker: receive messages from pub and forward them to sub
-- sub: topic subscribers in MQTT protocol
+**DO NOT USE THE PROJECT IN PRODUCTION ENVIRONMENT!**
 
-## Test Process
-### Test Preparation
-0. Launching the broker remotely or locally
-1. Running the benchmark program locally, it will:
-    - Launching specified numbers of sub
-    - Launching specified numbers of pub
-    - Sending requests/replies, calculate latency
-    - save testing data to `.xlsx` file
+## Structure
+```
+├───experiment: experiment code for IFN712 
+├───kcp: mqtt over kcp implementation
+├───mqttsrv: a basic mqtt broker supporting both tcp and kcp
+├───pub: a minimum mqtt over kcp publisher
+├───sub: a minimum mqtt over kcp subscriber 
+└───tcp: mqtt over tcp implementation
+```
 
-### Process
+## Experiment
+### Principle
 ```mermaid
 graph LR
-    subgraph local machine
-        subgraph pair
-            client1
-            client2
-        end
-        pairs["There can be multiple pairs"]
-        stats
-        file["xlsx file"]
-    end
 
-    subgraph cloud
-        broker
-    end
+A["local client 1"]
+B["broker on cloud"]
+C["local client 2"]
 
+A -- step1: sending /pingtest/tcp/request --> B
+B -- step2: forward /pingtest/tcp/request --> C
+C -- step3: sending /pingtest/tcp/reply --> B
+B -- step4: forward /pingtest/tcp/reply --> A
 
-    client1 -- step1: sending /pingtest/{pair_id}/request --> broker
-    broker -- step2: forward /pingtest/{pair_id}/request --> client2
-    client2 -- step3: sending /pingtest/{pair_id}/reply --> broker
-    broker -- step4: forward /pingtest/{pair_id}/reply --> client1
-    client1 -- step5: sending latency test records --> stats
-
-    stats -- step6: output test records --> file
+A -- step5: sending /pingtest/kcp/request --> B
+B -- step6: forward /pingtest/kcp/request --> C
+C -- step7: sending /pingtest/kcp/reply --> B
+B -- step8: forward /pingtest/kcp/reply --> A
 ```
+
+The program will record all test records into a `.xlsx` file for analysis purposes.
+
+## Environment
+The experiment needs to be performed in different environments/configurations
+
+| Env                  | Options                                                  |
+|----------------------|----------------------------------------------------------|
+| Request Interval     | `0.1s`, `0.5s`, `1s`                                     |
+| Message Payload Size | `60 bytes`, `500 bytes`, `1500 bytes`                    |
+| Network Conditions   | `Ethernet`, `Mobile 4G static`, `Mobile 4G while moving` |
+
 
 ## Thanks
 Special appreciation to these open-source projects and their extraordinary contribution to the research project.
