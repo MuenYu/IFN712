@@ -40,11 +40,11 @@ The program will record all test records into a `.xlsx` file for analysis purpos
 ## Environment
 The experiment needs to be performed in different environments/configurations
 
-| Env                  | Options                                                  |
-|----------------------|----------------------------------------------------------|
-| Request Interval     | `0.1s`, `0.5s`, `1s`                                     |
-| Message Payload Size | `60 bytes`, `500 bytes`, `1500 bytes`                    |
-| Network Conditions   | `Ethernet`, `Mobile 4G static`, `Mobile 4G while moving` |
+| Env                  | Options                                                          |
+|----------------------|------------------------------------------------------------------|
+| Request Interval     | `0.1s`, `0.5s`, `1s`                                             |
+| Message Payload Size | `60 bytes`, `500 bytes`, `1500 bytes`                            |
+| Network Conditions   | `Ethernet`, `Wifi`, `Mobile 4G static`, `Mobile 4G while moving` |
 
 
 ## Thanks

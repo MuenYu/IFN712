@@ -15,7 +15,7 @@ func pingKcp() {
 
 	start := make(chan struct{})
 	stop := make(chan struct{})
-	payload := make(proto.BytesPayload, payloadSize)
+	payload := make(proto.BytesPayload, *payloadSize)
 
 	go func() {
 		cc := connectKcp()
@@ -45,7 +45,7 @@ func pingKcp() {
 	cc.Subscribe([]proto.TopicQos{
 		{topic2, proto.QosAtLeastOnce},
 	})
-	for count := 0; count < messagePerPair; count++ {
+	for count := 0; count < *messagePerPair; count++ {
 		clearChan(cc.Incoming)
 		record := testRecord{
 			proto: "KCP",
@@ -69,17 +69,17 @@ func pingKcp() {
 			} else if !bytes.Equal(buf.Bytes(), payload) {
 				record.errMsg = "payload mismatch"
 			}
-		case <-time.After(timeout):
+		case <-time.After(*timeout):
 			record.latency = -1
 			record.errMsg = "timeout"
 		}
 		recordChan <- record
-		time.Sleep(reqInterval)
+		time.Sleep(*reqInterval)
 	}
 }
 
 func connectKcp() *kcp.ClientConn {
-	conn, err := kcp.DialKCP(host)
+	conn, err := kcp.DialKCP(*host)
 	if err != nil {
 		fmt.Printf("kcp dial: %v\n", err)
 		os.Exit(2)

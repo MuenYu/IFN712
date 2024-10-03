@@ -28,7 +28,7 @@ func (record *testRecord) write2Row(sheet *xlsx.Sheet) {
 }
 
 var (
-	recordChan = make(chan testRecord, 2*messagePerPair)
+	recordChan = make(chan testRecord, 2**messagePerPair)
 	wg         = new(sync.WaitGroup)
 	file       = openOrCreateXlsx()
 	sheet      = initSheetAndHead(file, []string{
@@ -39,7 +39,7 @@ var (
 )
 
 func runStats() {
-	bar := progressbar.Default(2 * messagePerPair)
+	bar := progressbar.Default(int64(2 * *messagePerPair))
 	for record := range recordChan {
 		wg.Add(1)
 		go func(record testRecord) {
@@ -53,7 +53,7 @@ func runStats() {
 func outputReport() {
 	wg.Wait()
 	close(recordChan)
-	if err := file.Save(outputFile); err != nil {
+	if err := file.Save(*outputFile); err != nil {
 		log.Println(err.Error())
 	}
 }

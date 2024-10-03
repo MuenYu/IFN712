@@ -1,21 +1,21 @@
 package main
 
 import (
+	"flag"
 	"time"
 )
 
-const (
-	//host = "127.0.0.1:1883"
-	host           = "3.24.217.226:1883"
-	messagePerPair = 10
-	payloadSize    = 60
-	timeout        = time.Second
-	reqInterval    = 100 * time.Millisecond
-
-	outputFile = "data.xlsx"
+var (
+	host           = flag.String("host", "127.0.0.1:1883", "mqtt broker host")
+	messagePerPair = flag.Int("messages", 100, "the quantity of requests going to send for each")
+	payloadSize    = flag.Int("payload", 60, "the payload size for requests")
+	timeout        = flag.Duration("timeout", time.Second, "the timeout for each request")
+	reqInterval    = flag.Duration("interval", 100*time.Millisecond, "the interval between requests")
+	outputFile     = flag.String("output", "data.xlsx", "the file to store testing result")
 )
 
 func main() {
+	flag.Parse()
 	go runStats()
 	pingTcp()
 	pingKcp()

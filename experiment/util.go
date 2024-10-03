@@ -19,7 +19,7 @@ func clearChan(incoming chan *proto.Publish) {
 }
 
 func openOrCreateXlsx() *xlsx.File {
-	wb, err := xlsx.OpenFile(outputFile)
+	wb, err := xlsx.OpenFile(*outputFile)
 	if err != nil {
 		wb = xlsx.NewFile()
 	}

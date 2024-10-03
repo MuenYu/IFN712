@@ -1,14 +1,17 @@
-APP_NAME = mqttsrv
-
-GOOS_LINUX = linux
-GOARCH_AMD64 = amd64
-MAIN_PATH = ./mqttsrv
+EXP_PATH = ./experiment
+SRV_PATH = ./mqttsrv
 OUTPUT = ./bin
 
-build-win:
-	go build -o $(OUTPUT)/$(APP_NAME) $(MAIN_PATH)/main.go
+build-srv-win:
+	GOOS=windows GOARCH=amd64 go build -o $(OUTPUT)/mqttsrv.exe $(SRV_PATH)
 
-build-linux:
-	GOOS=$(GOOS_LINUX) GOARCH=$(GOARCH_AMD64) go build -o $(OUTPUT)/$(APP_NAME) $(MAIN_PATH)/main.go
+build-srv-linux:
+	GOOS=linux GOARCH=amd64 go build -o $(OUTPUT)/mqttsrv $(SRV_PATH)
+
+build-exp-win:
+	GOOS=windows GOARCH=amd64 go build -o $(OUTPUT)/exp.exe $(EXP_PATH)
+
+build-exp-linux:
+	GOOS=linux GOARCH=amd64 go build -o $(OUTPUT)/exp $(EXP_PATH)
 
 
