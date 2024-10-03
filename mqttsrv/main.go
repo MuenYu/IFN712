@@ -25,8 +25,13 @@ func main() {
 	}
 	svrTcp := tcp.NewServer(lTcp)
 	svrKcp := kcp.NewServer(lKcp)
+
 	svrTcp.Start()
 	svrKcp.Start()
-	<-svrTcp.Done
-	<-svrKcp.Done
+
+	select {
+	case <-svrTcp.Done:
+	case <-svrKcp.Done:
+		log.Println("server is closed")
+	}
 }

@@ -238,19 +238,17 @@ func NewServer(l *kcp.Listener) *Server {
 // Start makes the Server start accepting and handling connections.
 func (s *Server) Start() {
 	go func() {
+		defer close(s.Done)
 		for {
 			conn, err := s.l.AcceptKCP()
 			if err != nil {
 				log.Print("Accept: ", err)
-				break
 			}
-			// enable kcp turbo mode
 			conn.SetNoDelay(1, 10, 2, 1)
 			cli := s.newIncomingConn(conn)
 			s.stats.clientConnect()
 			cli.start()
 		}
-		close(s.Done)
 	}()
 }
 

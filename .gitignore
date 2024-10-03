@@ -12,3 +12,4 @@ vbridge/vbridge
 ticktock/ticktock
 playground/main.go
 *.xlsx
+bin
