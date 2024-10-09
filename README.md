@@ -12,7 +12,8 @@ TCP and MQTT over KCP.
 ├───mqttsrv: a basic mqtt broker supporting both tcp and kcp
 ├───pub: a minimum mqtt over kcp publisher
 ├───sub: a minimum mqtt over kcp subscriber 
-└───tcp: mqtt over tcp implementation
+├───tcp: mqtt over tcp implementation
+└───visual: data visualization
 ```
 
 ## Experiment
