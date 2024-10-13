@@ -4,7 +4,6 @@ import (
 	proto "github.com/huin/mqtt"
 	"github.com/tealeg/xlsx/v3"
 	"log"
-	"time"
 )
 
 // clearChan: clean all existing msg in channel, avoiding count duplicated requests & latency
@@ -27,14 +26,18 @@ func openOrCreateXlsx() *xlsx.File {
 }
 
 func initSheetAndHead(wb *xlsx.File, header []string) *xlsx.Sheet {
-	sheetName := time.Now().Format("20060102150405")
-	sheet, err := wb.AddSheet(sheetName)
-	if err != nil {
-		log.Fatal(err)
+	sheetName := "Sheet1"
+	sh, ok := wb.Sheet[sheetName]
+	if !ok {
+		sh, err := wb.AddSheet(sheetName)
+		if err != nil {
+			log.Fatal(err)
+		}
+		row := sh.AddRow()
+		for _, title := range header {
+			row.AddCell().SetString(title)
+		}
+		return sh
 	}
-	row := sheet.AddRow()
-	for _, title := range header {
-		row.AddCell().SetString(title)
-	}
-	return sheet
+	return sh
 }

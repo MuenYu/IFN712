@@ -25,6 +25,9 @@ func (record *testRecord) write2Row(sheet *xlsx.Sheet) {
 	row.AddCell().Value = record.proto
 	row.AddCell().SetInt64(int64(record.latency))
 	row.AddCell().Value = record.errMsg
+	row.AddCell().SetInt64(int64(*payloadSize))
+	row.AddCell().SetInt64(int64(*reqInterval / 1e6))
+	row.AddCell().Value = *network
 }
 
 var (
@@ -35,6 +38,9 @@ var (
 		"protocol",
 		"latency (nanosecond)",
 		"error message",
+		"payload",
+		"interval",
+		"network",
 	})
 )
 

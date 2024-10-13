@@ -12,6 +12,7 @@ var (
 	timeout        = flag.Duration("timeout", time.Second, "the timeout for each request")
 	reqInterval    = flag.Duration("interval", 100*time.Millisecond, "the interval between requests")
 	outputFile     = flag.String("output", "data.xlsx", "the file to store testing result")
+	network        = flag.String("network", "ethernet", "e.g. ethernet, wifi")
 )
 
 func main() {
