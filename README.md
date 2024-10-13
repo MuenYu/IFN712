@@ -6,6 +6,7 @@ TCP and MQTT over KCP.
 **DO NOT USE THE PROJECT IN PRODUCTION ENVIRONMENT!**
 
 ## Structure
+
 ```
 ├───experiment: experiment code for IFN712 
 ├───kcp: mqtt over kcp implementation
@@ -17,7 +18,9 @@ TCP and MQTT over KCP.
 ```
 
 ## Experiment
+
 ### Principle
+
 ```mermaid
 graph LR
 
@@ -41,12 +44,11 @@ The program will record all test records into a `.xlsx` file for analysis purpos
 ## Environment
 The experiment needs to be performed in different environments/configurations
 
-| Env                  | Options                                                          |
-|----------------------|------------------------------------------------------------------|
-| Request Interval     | `0.1s`, `0.5s`, `1s`                                             |
-| Message Payload Size | `60 bytes`, `500 bytes`, `1500 bytes`                            |
-| Network Conditions   | `Ethernet`, `Wifi`, `Mobile 4G static`, `Mobile 4G while moving` |
-
+| Env                  | Options                                                              |
+|----------------------|----------------------------------------------------------------------|
+| Request Interval     | `0.1s`, `0.5s`, `1s`                                                 |
+| Message Payload Size | `60 bytes`, `500 bytes`, `1500 bytes` , `5000 bytes` , `10000 bytes` |
+| Network Conditions   | `Ethernet`, `Wifi`, `Mobile 4G static`, `Mobile 4G while moving`     |
 
 ## Thanks
 Special appreciation to these open-source projects and their extraordinary contribution to the research project.
