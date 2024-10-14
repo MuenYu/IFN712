@@ -41,16 +41,26 @@ B -- step8: forward /pingtest/kcp/reply --> A
 
 The program will record all test records into a `.xlsx` file for analysis purposes.
 
-## Environment
+## Environment for Experiment1
+
 The experiment needs to be performed in different environments/configurations
 
-| Env                  | Options                                                              |
-|----------------------|----------------------------------------------------------------------|
-| Request Interval     | `0.1s`, `0.5s`, `1s`                                                 |
-| Message Payload Size | `60 bytes`, `500 bytes`, `1500 bytes` , `5000 bytes` , `10000 bytes` |
-| Network Conditions   | `Ethernet`, `Wifi`, `Mobile 4G static`, `Mobile 4G while moving`     |
+| Env                  | Options                                                          |
+|----------------------|------------------------------------------------------------------|
+| Request Interval     | `0.1s`, `0.5s`, `1s`                                             |
+| Message Payload Size | `60 bytes`, `500 bytes`, `1500 bytes`                            |
+| Network Conditions   | `Ethernet`, `Wifi`, `Mobile 4G static`, `Mobile 4G while moving` |
+
+## Environment for Experiment2
+
+| Env                  | Options                                |
+|----------------------|----------------------------------------|
+| Request Interval     | `0.1s`, `0.5s`, `1s`                   |
+| Message Payload Size | `5000 bytes`, `10000 bytes`            |
+| Network Conditions   | `Ethernet`, `Wifi`, `Mobile 4G static` |
 
 ## Thanks
+
 Special appreciation to these open-source projects and their extraordinary contribution to the research project.
 
 - [MQTT](https://github.com/jeffallen/mqtt)

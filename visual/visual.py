@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # Load the Excel file
-file_path = './result.xlsx'  # Update the file path to your specific file
+file_path = input('input file path:')
 df = pd.read_excel(file_path)
 
 # change ns to ms
