@@ -13,4 +13,7 @@ ticktock/ticktock
 playground/main.go
 *.xlsx
 !result.xlsx
+!data.xlsx
 bin
+*.jpg
+*.png
