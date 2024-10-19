@@ -3,7 +3,6 @@ module mqtt
 go 1.23.1
 
 require (
-	github.com/eclesh/welford v0.0.0-20240205031321-ea1c1e3189c0
 	github.com/huin/mqtt v0.0.0-20220729180547-9e81042af5f7
 	github.com/schollz/progressbar/v3 v3.16.0
 	github.com/xtaci/kcp-go/v5 v5.6.17
