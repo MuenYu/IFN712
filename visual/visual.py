@@ -11,7 +11,7 @@ df = pd.read_excel(file)
 df['payload_interval'] = df['payload (bytes)'].astype(str) + 'B_' + df['interval (ms)'].astype(str) + 'ms'
 
 # List of statistics to visualize
-stats = ['min', 'max', 'mean', 'middle', 'standard deviation']
+stats = ['p95', 'middle', 'standard deviation']
 
 for stat in stats:
     df[stat] = df[stat] / 1_000_000
@@ -37,7 +37,7 @@ for network in networks:
     sns.barplot(x='payload_interval_protocol', y='Value',hue='Statistic', data=network_data_long, errorbar=None)
 
     # Customize the plot
-    plt.title(f'{network} - Min, Max, Mean, Middle, and Std Dev for Payload & Interval Combinations (TCP vs KCP)')
+    plt.title(f'{network} - P95, Middle, and Std Dev for Payload & Interval Combinations (TCP vs KCP)')
     plt.xticks(rotation=45, ha='right')
     plt.ylabel('Latency (ms)')
     plt.tight_layout()
