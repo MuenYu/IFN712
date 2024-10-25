@@ -28,15 +28,19 @@ A["local client 1"]
 B["broker on cloud"]
 C["local client 2"]
 
+A -- step0: subscribe /pingtest/tcp/request --> B
+C -- step0: subscribe /pingtest/tcp/reply --> B
 A -- step1: sending /pingtest/tcp/request --> B
 B -- step2: forward /pingtest/tcp/request --> C
 C -- step3: sending /pingtest/tcp/reply --> B
 B -- step4: forward /pingtest/tcp/reply --> A
 
-A -- step5: sending /pingtest/kcp/request --> B
-B -- step6: forward /pingtest/kcp/request --> C
-C -- step7: sending /pingtest/kcp/reply --> B
-B -- step8: forward /pingtest/kcp/reply --> A
+A -- step5: subscribe /pingtest/kcp/request --> B
+C -- step5: subscribe /pingtest/kcp/reply --> B
+A -- step6: sending /pingtest/kcp/request --> B
+B -- step7: forward /pingtest/kcp/request --> C
+C -- step8: sending /pingtest/kcp/reply --> B
+B -- step9: forward /pingtest/kcp/reply --> A
 ```
 
 The program will record all test records into a `.xlsx` file for analysis purposes.
